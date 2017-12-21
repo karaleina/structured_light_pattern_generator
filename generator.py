@@ -1,6 +1,8 @@
 import numpy as np
 import cv2
 import math
+import pygame
+import time
 from matplotlib import pyplot as plt
 
 class PatternGenerator(object):
@@ -49,8 +51,44 @@ class PatternGenerator(object):
 
 
 
-if __name__ == "__main__":
+def gray(im):
+    im = 255 * (im / im.max())
+    w, h = im.shape
+    ret = np.empty((w, h, 3), dtype=np.uint8)
+    ret[:, :, 2] = ret[:, :, 1] = ret[:, :, 0] = im
+    return ret
+
+
+def get_picture(index, images):
+    Z = images[index]
+    Z = 255 * Z / Z.max()
+    Z = gray(Z)
+
+    return pygame.surfarray.make_surface(Z)
+
+
+def main():
+
     pg = PatternGenerator()
+    phases = list(np.linspace(0, 90, num=5))
+    images, names = pg.pattern_sin(w=3000, h=1000, phases=phases, periods=[160], directions=[0])
+    for index, (image, name) in enumerate(zip(images, names)):
+        cv2.imshow("Pattern_" + str(name), image)
+    cv2.waitKey()
+    cv2.destroyAllWindows()
+
+    pygame.display.set_mode((1500,1000), pygame.FULLSCREEN)
+    main_surface = pygame.display.get_surface()
+    a = 0
+    while a < len(images):
+        Z = get_picture(index=a, images=images)
+        main_surface.blit(Z, (0, 0))
+        pygame.display.update()
+        time.sleep(1)
+        a += 1
+
+if __name__ == "__main__":
+    #pg = PatternGenerator()
 
     # pattern = pg.calculate_horizontal_pattern(phi=20, T=20, w=500, h=400)
     # print(pattern)
@@ -59,11 +97,9 @@ if __name__ == "__main__":
     # print(pattern2)
     # cv2.imshow("Pattern_vertical", pattern2)
 
-    phases = list(np.linspace(0, 30, num=2)) # radiany
+    #phases = list(np.linspace(0, 90, num=5)) # radiany
+    # images, names = pg.pattern_sin(w=800, h=600, phases=phases, periods=[160], directions=[0])
+    # for index, (image, name) in enumerate(zip(images, names)):
+    #     cv2.imshow("Pattern_" + str(name), image)
 
-    images, names = pg.pattern_sin(w=800, h=600, phases=phases, periods=[160], directions=[0])
-    for index, (image, name) in enumerate(zip(images, names)):
-        cv2.imshow("Pattern_" + str(name), image)
-    cv2.waitKey()
-
-    # TODO add information about pattern
+    main()
