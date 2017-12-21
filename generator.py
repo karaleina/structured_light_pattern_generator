@@ -3,8 +3,6 @@ import cv2
 import math
 import pygame
 import time
-from matplotlib import pyplot as plt
-
 
 class PatternGenerator(object):
 
@@ -81,8 +79,9 @@ def main(images, names, w, h):
         Z = get_picture(index=a, images=images)
         main_surface.blit(Z, (0, 0))
         pygame.display.update()
-        time.sleep(1)
+        time.sleep(600)
         a += 1
+
 
 if __name__ == "__main__":
     #pg = PatternGenerator()
@@ -103,6 +102,6 @@ if __name__ == "__main__":
     h = 1200
     pg = PatternGenerator()
     phases = list(np.linspace(0, 90, num=5))
-    images, names = pg.pattern_sin(w=w, h=h, phases=phases, periods=[160], directions=[0])
+    images, names = pg.pattern_sin(w=w, h=h, phases=[+math.pi], periods=[16], directions=[0])
     for name in names: print(name)
     main(images, names, w, h)
