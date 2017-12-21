@@ -5,6 +5,7 @@ import pygame
 import time
 from matplotlib import pyplot as plt
 
+
 class PatternGenerator(object):
 
     def __init__(self):
@@ -50,7 +51,6 @@ class PatternGenerator(object):
         return images, names
 
 
-
 def gray(im):
     im = 255 * (im / im.max())
     w, h = im.shape
@@ -60,24 +60,21 @@ def gray(im):
 
 
 def get_picture(index, images):
-    Z = images[index]
+    Z = images[index].T
     Z = 255 * Z / Z.max()
     Z = gray(Z)
 
     return pygame.surfarray.make_surface(Z)
 
 
-def main():
+def main(images, names, w, h):
 
-    pg = PatternGenerator()
-    phases = list(np.linspace(0, 90, num=5))
-    images, names = pg.pattern_sin(w=3000, h=1000, phases=phases, periods=[160], directions=[0])
     for index, (image, name) in enumerate(zip(images, names)):
         cv2.imshow("Pattern_" + str(name), image)
-    cv2.waitKey()
+        cv2.waitKey(200)
     cv2.destroyAllWindows()
 
-    pygame.display.set_mode((1500,1000), pygame.FULLSCREEN)
+    pygame.display.set_mode((w, h), pygame.FULLSCREEN)
     main_surface = pygame.display.get_surface()
     a = 0
     while a < len(images):
@@ -102,4 +99,10 @@ if __name__ == "__main__":
     # for index, (image, name) in enumerate(zip(images, names)):
     #     cv2.imshow("Pattern_" + str(name), image)
 
-    main()
+    w = 1600
+    h = 1200
+    pg = PatternGenerator()
+    phases = list(np.linspace(0, 90, num=5))
+    images, names = pg.pattern_sin(w=w, h=h, phases=phases, periods=[160], directions=[0])
+    for name in names: print(name)
+    main(images, names, w, h)
