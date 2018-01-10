@@ -1,4 +1,4 @@
-from scipy.fftpack import fft
+from scipy.fftpack import fft, ifft
 from scipy.signal import argrelextrema
 from scipy.signal import freqz
 # from filters import filters
@@ -9,6 +9,7 @@ import cv2
 
 
 def count_fft(signal, T):
+
         new_y = signal.ravel()
         # FFT
         N = len(new_y)
@@ -20,6 +21,32 @@ def count_fft(signal, T):
         yf_abs = np.abs(yf[0:len(yf) // 2])
 
         return [xf, yf_abs]
+
+def count_fft_imag(signal, number_of_samples_to_add=0, T=0.02):
+        new_y = signal.ravel()
+        # FFT
+        N = len(new_y)
+
+        yf = fft(new_y, n=number_of_samples_to_add)
+        xf = np.linspace(0.0, 1.0 / (2 * T), number_of_samples_to_add // 2)
+
+        yf = yf / len(yf)
+        yf = yf[0:len(yf) // 2]
+
+        return [xf, yf]
+
+def count_ifft(fft, xf=None, number_of_samples=None):
+        return ifft(fft)
+
+def filter_fft(xf, yf, f_min=None, f_max=None):
+        new_y = yf
+        for index, (x, y) in enumerate(zip(xf, yf)):
+            if x<f_min or x>f_max:
+                new_y[index] = 0
+            else:
+                new_y[index] = y
+
+        return new_y
 
 #
 # def find_threshold_in_histogram(histogram, bin_edges, plot=True):

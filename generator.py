@@ -3,6 +3,27 @@ import cv2
 import math
 import pygame
 import time
+import general_usefull_package
+
+def convert_image_if_needed(image, convert_to="gray"):
+    if convert_to == "gray":
+        if len(image.shape) < 3:
+            return image
+        elif len(image.shape) == 3:
+            return cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        else:
+            print("Nie wiadomo, co to za obraz! :(")
+
+    elif convert_to == "color":
+        if len(image.shape) < 3:
+            return cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
+        elif len(image.shape) == 3:
+            return image
+        else:
+            print("Nie wiadomo, co to za obraz! :(")
+    else:
+        print("Zdefiniuj poprawnie paramter 'convert_to', "
+              "ktory moze przyjmowac wartosci 'gray' lub 'color'")
 
 class PatternGenerator(object):
 
@@ -98,10 +119,16 @@ if __name__ == "__main__":
     # for index, (image, name) in enumerate(zip(images, names)):
     #     cv2.imshow("Pattern_" + str(name), image)
 
-    w = 1600
+    w = 1500
     h = 1200
     pg = PatternGenerator()
     phases = list(np.linspace(0, 90, num=5))
-    images, names = pg.pattern_sin(w=w, h=h, phases=[+math.pi], periods=[16], directions=[0])
+    images, names = pg.pattern_sin(w=w, h=h, phases=[+math.pi], periods=[20], directions=[0])
+    cv2.imshow("Img", images[0])
+    cv2.waitKey()
+
+    color_img = 255*images[0]
+
+    cv2.imwrite("test.bmp", color_img)
     for name in names: print(name)
-    main(images, names, w, h)
+    #main(images, names, w, h)

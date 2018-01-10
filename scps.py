@@ -15,20 +15,33 @@ def phase_calculating(image):
     # Index row refers to original image
     # Index col also refers to original image
     for index_col, col in enumerate(old_image):
-        if 3 <= index_col <= (len(old_image[:,0]) - 3):
+
+        if index_col == 4:
+            plt.figure(17)
+            plt.plot(col[:100])
+
+
+        if 10 <= index_col <= (len(old_image[:,0]) - 11):
+
+            if index_col == 3:
+                print(col[0:5])
+
             for index_row, element in enumerate(col):
-                if 3 <= index_row <= (len(old_image[0, :]) - 3):
-
-                    c = math.pow((col[index_row-1] - col[index_row+1]), 2)
-                    d = math.pow((col[index_row-2] - col[index_row+2]), 2)
+                if 10 <= index_row <= (len(old_image[0, :]) - 11):
+                    c = math.pow((int(col[index_row-5]) - int(col[index_row+5])), 2)
+                    d = math.pow((int(col[index_row-10]) - int(col[index_row+10])), 2)
                     a = np.power(4*c - d, 1/2)
-                    b = 2*col[index_row] - col[index_row-2] - col[index_row+2]
+                    b = 2*int(col[index_row]) - int(col[index_row-10]) - int(col[index_row+10])
 
-                    if math.isnan(a) or b==0:
-                        phase_image[index_row, index_col] = 0
-                    else:
-                        phase_image[index_row, index_col] = np.arctan(a/b) * 2
+                    # if math.isnan(a) or b==0:
+                    #     phase_image[index_row, index_col] = 0
+                    # else:
+                    phase_image[index_row, index_col] = np.arctan(a/b) * 2
 
+        if index_col == 4:
+            plt.figure(18)
+            plt.plot(phase_image[:,4][:100])
+            plt.show()
 
     return phase_image
 
@@ -85,14 +98,17 @@ def read_frame_from_video(avi):
 
 if __name__ == "__main__":
 
-    avi_path = os.path.abspath("C:\\Users\\ImioUser\\Desktop\\K&A\\ACTIVE3D\\ODDECH_paski_21_12_17\\8.avi")
-    image = np.array(read_frame_from_video(avi=avi_path))
+    # avi_path = os.path.abspath("C:\\Users\\ImioUser\\Desktop\\K&A\\ACTIVE3D\\ODDECH_paski_21_12_17\\8.avi")
+    # image = np.array(read_frame_from_video(avi=avi_path))
+    #
+    img = cv2.imread("test_20.bmp")
+    #image = cv2.imread("test.bmp")
 
     # image = cv2.imread("images_tps/16_+pi.bmp")
     # image = cv2.imread("images/test.png")
 
 
-    image = convert_image_if_needed(image)
+    image = convert_image_if_needed(img)
     phase_all, image_unwrapped, bez_stalej = main(image)
 
     plt.figure(1)
